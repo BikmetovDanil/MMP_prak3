@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Случайный лес</title>
+    <style>
+    	body{ background-color: #ccffff; }
+    </style>
+    <script>
+    	function dis(f){
+    		if(f.fss_default.checked) f.fss.disabled = 1
+    		else f.fss.disabled = 0
+    		if(f.wo_depth.checked) f.max_depth.disabled = 1
+    		else f.max_depth.disabled = 0
+    	}
+    </script>
+</head>
+<body>
+
+<form method="get" action="{{ url_for('prepare_model') }}">
+<button type="submit">Назад</button>
+</form>
+
+<form method="post" action="{{ url_for('random_forest') }}">
+<div style="text-align: center;">
+	<h2><span style="background-color: #ccffff;">Подбор параметров:</span></h2>
+	<h4>Количество деревьев:</h4>
+	<p><input min="1" type="number" value="100" required name="n_estimators" /></p>
+	<p>***</p>
+	<h4>Размерность подвыборки признаков по умолчанию 
+		<input checked="checked" type="checkbox" name="fss_default" onclick="dis(this.form)"/></h4>
+	<h4>Размерность подвыборки признаков для одного дерева:</h4>
+	<p><input min="1" type="number" value="15" required disabled name="fss" /></p>
+	<p>***</p>
+	<h4>Не ограничивать глубину деревьев: 
+		<input type="checkbox" name="wo_depth" onclick="dis(this.form)"/></h4>
+	<h4>Максимальная глубина дерева:</h4>
+	<p><input min="1" type="number" value="5" required name="max_depth" /></p>
+	<p>***</p>
+	<p><button type="submit">Обучить модель</button></p>
+</div>
+</form>

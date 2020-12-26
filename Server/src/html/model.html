@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <title>Загрузка модели</title>
+    <style>
+    	body{ background-color: #ccffff; }
+    	.flash {padding: 10px;}
+		.flash.success {
+		    border: 1px solid #21DB56;
+		    background: #AEFFC5;
+		}
+		.flash.error {
+		    border: 1px solid #FF4343;
+		    background: #FF9C9C;
+		}
+    </style>
+</head>
+<body>
+
+<form method="get" action="{{ url_for('index') }}">
+<button type="submit">Назад</button>
+</form>
+
+{% for cat, msg in get_flashed_messages(True) %}
+	<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+
+<form method="post" enctype=multipart/form-data action="{{ url_for('prepare_model') }}">
+	<div style="text-align: center;">
+		<h2><span style="background-color: #ccffff;">Загрузите обучающий .csv файл:</span></h2>
+		<p><input type="file" required name="train_file"/></p>
+		<h2><span style="background-color: #ccffff;">Загрузите .csv файл со значениями целевой переменной:</span></h2>
+		<p><input type="file" required name="target_file"/></p>
+	</div>
+	<p>&nbsp;</p>
+	<div style="text-align: center;">
+	<h2><span style="background-color: #ccffff;">Теперь выберите, какой алгоритм будет использован:</span></h2>
+	<p><select name="alg">
+		<option value='rf'>Случайный лес</option>
+		<option value='gb'>Градиентный бустинг</option>
+	</select></p>
+	<p>&nbsp;</p>
+	<button type="submit">Далее</button>
+	</div>
+</form>

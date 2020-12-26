@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Градиентный бустинг</title>
+    <style>
+    	body{ background-color: #ccffff; }
+    </style>
+</head>
+<body>
+
+<form method="get" action="{{ url_for('prepare_model') }}">
+<button type="submit">Назад</button>
+</form>
+
+<form method="post" action="{{ url_for('gradient_boosting') }}">
+<div style="text-align: center;">
+	<h2><span style="background-color: #ccffff;">Подбор параметров:</span></h2>
+	<h4>Количество деревьев:</h4>
+	<p><input min="1" type="number" value="100" required name="n_estimators"/></p>
+	<p>***</p>
+	<h4>Размерность подвыборки признаков по умолчанию 
+		<input type="checkbox" checked name="fss_default"/></h4>
+	<h4>Размерность подвыборки признаков для одного дерева:</h4>
+	<p><input min="1" type="number" value="15" required name="fss"/></p>
+	<p>***</p>
+	<h4>Не ограничивать глубину деревьев: 
+		<input type="checkbox" name="wo_depth" /></h4>
+	<h4>Максимальная глубина дерева:</h4>
+	<p><input min="1" type="number" value="5" required name="max_depth"/></p>
+	<p>***</p>
+	<h4>Темп обучения</h4>
+	<p><input max="1" min="0" step="0.01" type="number" value="0.1" required name="learning_rate"/></p>
+	<p>***</p>
+	<p><button type="Submit">Обучить модель</button></p>
+</div>
+</form>

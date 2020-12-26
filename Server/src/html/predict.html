@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Предсказывание</title>
+    <style>
+    	body{ background-color: #ccffff; }
+    	body{ background-color: #ccffff; }
+    	.flash {padding: 10px;}
+		.flash.success {
+		    border: 1px solid #21DB56;
+		    background: #AEFFC5;
+		}
+		.flash.error {
+		    border: 1px solid #FF4343;
+		    background: #FF9C9C;
+		}
+    </style>
+</head>
+<body>
+
+{% for cat, msg in get_flashed_messages(True) %}
+	<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+
+<form method="get" action={% if cd.alg == 'rf' %}"{{ url_for('random_forest') }}"{% endif %}{% if cd.alg == 'gb' %}"{{ url_for('gradient_boosting') }}"{% endif %}>
+<button type="submit">Назад</button>
+</form>
+
+<form method="post" enctype=multipart/form-data action="{{ url_for('download') }}">
+	<div style="text-align: center;">
+	<h2><span>Загрузите .csv файл для предсказывания:</span></h2>
+	<p><input type="file" required name='predict_file' /></p>
+	<h2><span>Вы можете воспользоваться обученной моделью:</span></h2>
+	<p><button type="submit">Скачать предсказание</button></p></div>
+</form>
+<p>&nbsp;</p>
+<p>***</p>
+<p>&nbsp;</p>
+<div style="text-align: left;">
+	<p><b>Алгоритм:</b><b style="color: #4600a1;"> {% if cd.alg == 'rf' %} случайный лес {% endif %}{% if cd.alg == 'gb' %} градиентный бустинг {% endif %}</b></p>
+	<p><b>Количество деревьев:</b><b style="color: #ff0d72;"> {{ cd.n }}</b></p>
+	<p><b>Количество признаков в деревьях:</b><b style="color: #00783e;"> {% if cd.fss != None %}{{ cd.fss }}{% endif %}
+	{% if cd.fss == None %} по умолчанию (в данном случае {{ train.shape[1]//3 }}) {% endif %}</b></p>
+	<p><b>Максимальная глубина деревьев:</b><b style="color: #e08802;"> {% if cd.md != None %}{{ cd.md }}{% endif %}
+	{% if cd.md == None %} не ограничена {% endif %}</b></p>
+	{% if cd.alg == 'gb' %}<p><b>Темп обучения:</b><b style="color: #0050c7;"> {{cd.lr}} </b></p>{% endif %}
+</div>
+<p>&nbsp;</p>
+<p>***</p>
+<p>&nbsp;</p>
+<h2>История обучения</h2>
+<div style="text-align: left;"><b style="color: #968012;">Итерация</b>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<b style="color: #5700ad;">Значение функции потерь</b>
+</div>
+{% for message in history %}
+<div style="text-align: left;">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	{{ message.iteration }}
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	{% if message.iteration < 10 %}&nbsp;{% endif %}
+	{% if message.iteration < 100 %}&nbsp;{% endif %}
+	{% if message.iteration < 1000 %}&nbsp;{% endif %}
+	<b>{{ message.loss }}</b></div>
+{% endfor %}
