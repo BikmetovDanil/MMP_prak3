@@ -68,10 +68,6 @@ def prepare_model():
             if allowed_file(ftrain.filename) and allowed_file(ftarget.filename):
                 ftrain_name = secure_filename(ftrain.filename)
                 ftarget_name = secure_filename(ftarget.filename)
-                print('*********')
-                print('Сохраняю в: ', upload_path)
-                print('ftrain_name = ', ftrain_name)
-                print('*********')
                 ftrain.save(os.path.join(app.config['UPLOAD_FOLDER'], ftrain_name))
                 ftarget.save(os.path.join(app.config['UPLOAD_FOLDER'], ftarget_name))
             else:
@@ -82,13 +78,19 @@ def prepare_model():
             return render_template('model.html', train=train, target=target)
         train = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], ftrain_name))
         target = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], ftarget_name))
+        target = target.iloc[:, -1]
         if type(train) != 'numpy.ndarray':
             train = train.to_numpy()
         if type(target) != 'numpy.ndarray':
             target = target.to_numpy()
         feat_col = []
         for j in range(train.shape[1]):
-            if type(train[0, j]) == float or type(train[0, j]) == int:
+            t = str
+            try:
+                t = type(float(train[1, j]))
+            except:
+                pass
+            if t == float:
                 feat_col += [j]
         train = train[:, feat_col]
         cd.alg = request.form['alg']
@@ -178,7 +180,12 @@ def download():
             pred = pred.to_numpy()
         feat_col = []
         for j in range(pred.shape[1]):
-            if type(pred[0, j]) == float or type(pred[0, j]) == int:
+            t = str
+            try:
+                t = type(float(train[1, j]))
+            except:
+                pass
+            if t == float:
                 feat_col += [j]
         pred = pred[:, feat_col]
         p = model.predict(pred)
